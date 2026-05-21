@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: Ai-agent-scaffold-zqiusu-app
+  profiles:
+    active: dev
