@@ -1,0 +1,79 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  review:
+    # 只对本仓库 PR 跑，不响应 fork（防止恶意 PR 消耗额度 / 注入）
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            你是这个仓库的代码审查员。请审查当前 PR 的所有改动。
+
+            ## 重点检查
+            1. **正确性**：逻辑 bug、边界条件、空指针、并发问题
+            2. **安全**：SQL 注入、XSS、命令注入、敏感信息泄露、鉴权缺失
+            3. **架构**：是否违反 DDD 分层（api / app / domain / infrastructure / trigger / types）
+               - 领域层不能依赖基础设施层
+               - 实体不要泄露到 API 层
+            4. **代码质量**：命名、重复代码、过度抽象、未使用代码
+            5. **测试**：核心逻辑是否有测试覆盖
+
+            ## 输出格式
+            - 用中文写评审意见
+            - 按严重程度分类：🔴 必须修复 / 🟡 建议改进 / 🟢 可选优化
+            - 给出具体文件名和行号
+            - 如果没有 🔴 级别问题，且整体可合并，在评论**最后一行**输出：
+              ```
+              REVIEW_PASSED
+              ```
+            - 如果存在 🔴 级别问题，在评论**最后一行**输出：
+              ```
+              REVIEW_FAILED
+              ```
+
+      - name: Gate on review result
+        if: always() && steps.claude.outcome == 'success'
+        run: |
+          OUTPUT_FILE="${{ steps.claude.outputs.execution_file }}"
+          if [ -z "$OUTPUT_FILE" ] || [ ! -f "$OUTPUT_FILE" ]; then
+            echo "::warning::No execution output file found, skipping gate"
+            exit 0
+          fi
+
+          if grep -q "REVIEW_FAILED" "$OUTPUT_FILE"; then
+            echo "::error::Claude found critical issues in this PR"
+            exit 1
+          fi
+
+          if grep -q "REVIEW_PASSED" "$OUTPUT_FILE"; then
+            echo "✅ Claude approved this PR"
+            exit 0
+          fi
+
+          echo "::warning::Claude did not output a verdict; treating as pass"
