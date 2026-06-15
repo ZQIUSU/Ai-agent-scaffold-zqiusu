@@ -28,6 +28,7 @@ public class SequentialAgentTest {
     private static final String USER_ID = "test_user_456";
 
     public static void main(String[] args) {
+        // 配置OpenAI接口兼容服务
         OpenAiApi openAiApi = OpenAiApi.builder()
                 .baseUrl("https://apis.itedus.cn")
                 .apiKey("sk-zNFxIUzKyiZeX5jl053bEdEcDb1b47E0921c7dC145Ee9f96")
@@ -35,6 +36,8 @@ public class SequentialAgentTest {
                 .embeddingsPath("v1/embeddings")
                 .build();
 
+        // 把刚才的OpenAIApi包装成Spring AI的ChatModel
+        // 该ChatModel使用gpt-4.1模型，具有MCP能力，工具来自于sseMcpClient方法
         ChatModel chatModel = OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
@@ -43,6 +46,7 @@ public class SequentialAgentTest {
                         .build())
                 .build();
 
+        // 创建一个串行的子Agent集
         SequentialAgent codePipelineAgent =
                 SequentialAgent.builder()
                         .name("CodePipelineAgent")
@@ -51,10 +55,12 @@ public class SequentialAgentTest {
                         .subAgents(codeWriterAgent(chatModel), codeReviewerAgent(chatModel), codeRefactorerAgent(chatModel))
                         .build();
 
-        // Create an InMemoryRunner
+        // 用内存方式运行Agent，不依赖数据库
         InMemoryRunner runner = new InMemoryRunner(codePipelineAgent, APP_NAME);
+        // 创建一个Session会话
         // InMemoryRunner automatically creates a session service. Create a session using the service
         Session session = runner.sessionService().createSession(APP_NAME, USER_ID).blockingGet();
+        // 用户输入
         Content userMessage = Content.fromParts(Part.fromText("Write a Java function to calculate the factorial of a number."));
 
         // Run the agent
