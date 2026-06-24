@@ -34,6 +34,8 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # 让 action 在 PR 上创建评论并写入审查结果，否则评审内容只留在 execution_file 里、PR 页面看不到
           track_progress: true
+          # 锁定模型：默认会选 sonnet-4-6，但本订阅 token 仅有 Opus 访问权（已本地验证 opus-4-7 可用）
+          claude_args: "--model claude-opus-4-7"
           prompt: |
             你是这个仓库的代码审查员。请审查当前 PR 的所有改动。
 
