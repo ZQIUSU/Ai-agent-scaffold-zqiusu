@@ -1,6 +1,6 @@
 # Ai-agent-scaffold-zqiusu
 
-基于 **DDD 分层架构** 的 AI Agent 应用脚手架，集成 **Spring AI**、**LangChain4j** 与 **Google ADK**，用于快速搭建生产级 AI 智能体应用。
+基于 **DDD 分层架构** 的 AI Agent 应用脚手架，集成 **Spring AI**、**LangChain4j** 与 **Google ADK**，用于快速搭建生产级 AI 智能体应用，并内置 Claude PR 自动评审能力。
 
 > 本项目继承自 [小傅哥 xfg-frame-archetype](https://bugstack.cn/) 的 DDD 工程模板，在此之上引入 AI Agent 能力栈。
 
