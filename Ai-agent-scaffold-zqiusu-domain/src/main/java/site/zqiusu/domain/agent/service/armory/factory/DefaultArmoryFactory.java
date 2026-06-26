@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.ai.openai.api.OpenAiApi;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
@@ -27,6 +28,8 @@ public class DefaultArmoryFactory {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DynamicContext{
+
+        private OpenAiApi openAiApi;
 
         private Map<String, Object> dataObjects= new HashMap<>();
 
