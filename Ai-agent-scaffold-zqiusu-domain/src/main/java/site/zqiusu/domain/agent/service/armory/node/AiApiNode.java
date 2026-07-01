@@ -1,6 +1,7 @@
 package site.zqiusu.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,14 @@ import site.zqiusu.domain.agent.service.armory.factory.DefaultArmoryFactory;
 @Slf4j
 @Service
 public class AiApiNode extends AbstractArmorySupport {
+
+    @Resource
+    private ChatModelNode chatModelNode;
+
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
         // 编写 AiApi 构建
-        log.info("Ai Agent装配");
+        log.info("Ai Agent装配 - ApApiNode");
 
         AiAgentConfigTableVO aiAgentConfigTableVO = requestParameter.getAiAgentConfigTableVO();
         AiAgentConfigTableVO.Module.AiApi aiApiConfig = aiAgentConfigTableVO.getModule().getAiApi();
@@ -36,7 +41,7 @@ public class AiApiNode extends AbstractArmorySupport {
     @Override
     public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
         // 如果不需要下一个节点了，可以配置 defaultStrategyHandler
-        return defaultStrategyHandler;
+        return chatModelNode;
 
     }
 }
