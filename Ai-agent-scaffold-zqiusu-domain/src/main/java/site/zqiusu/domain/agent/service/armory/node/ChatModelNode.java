@@ -1,76 +1,64 @@
-package site.zqiusu.test.api.tools;
+package site.zqiusu.domain.agent.service.armory.node;
 
+import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
 import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.StandardEnvironment;
-import org.springframework.core.io.ClassPathResource;
-import site.zqiusu.Application;
+import org.springframework.stereotype.Service;
+import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
-import site.zqiusu.domain.agent.model.valobj.properties.AiAgentAutoConfigProperties;
+import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
+import site.zqiusu.domain.agent.service.armory.AbstractArmorySupport;
+import site.zqiusu.domain.agent.service.armory.factory.DefaultArmoryFactory;
 
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Properties;
 
-/**
- * Spring Ai Tool
- *
- * @author xiaofuge bugstack.cn @小傅哥
- * 2025/12/14 09:51
- */
 @Slf4j
-@SpringBootTest(classes = Application.class)
-public class SpringAiToolTest {
+@Service
+public class ChatModelNode extends AbstractArmorySupport {
 
-    @Resource
-    private AiAgentAutoConfigProperties aiAgentConfig;
+    @Override
+    protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
+        log.info("Ai Agent装配 - ChatModelNode");
+        OpenAiApi openAiApi = dynamicContext.getOpenAiApi();
 
-    @Test
-    public void test() {
-
-        AiAgentConfigTableVO config = aiAgentConfig.getTables().get("testAgent");
-
-        OpenAiApi openAiApi = OpenAiApi.builder()
-                .baseUrl(config.getModule().getAiApi().getBaseUrl())
-                .apiKey(config.getModule().getAiApi().getApiKey())
-                .completionsPath(config.getModule().getAiApi().getCompletionsPath())
-                .embeddingsPath(config.getModule().getAiApi().getEmbeddingsPath())
-                .build();
+        AiAgentConfigTableVO aiAgentConfigTableVO = requestParameter.getAiAgentConfigTableVO();
+        AiAgentConfigTableVO.Module.ChatModel chatModelConfig = aiAgentConfigTableVO.getModule().getChatModel();
 
         ChatModel chatModel = OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model(config.getModule().getChatModel().getModel())
+                        .model(aiAgentConfigTableVO.getModule().getChatModel().getModel())
                         .toolCallbacks(SyncMcpToolCallbackProvider.builder()
-                                .mcpClients(githubMcpClient(config.getModule().getChatModel())).build()
+                                .mcpClients(githubMcpClient(aiAgentConfigTableVO.getModule().getChatModel())).build()
                                 .getToolCallbacks())
                         .build())
                 .build();
 
-        String call = chatModel.call("列出这个 GitHub 账号可访问的仓库，并说明你调用了哪些 GitHub 工具。");
+
+        String call = chatModel.call("你哪有哪些工具能力");
 
         log.info("测试结果:{}", call);
+
+
+        return null;
     }
 
-    public static McpSyncClient githubMcpClient(AiAgentConfigTableVO.Module.ChatModel chatModelConfig) {
+    @Override
+    public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
+        return defaultStrategyHandler;
+    }
+
+    private static McpSyncClient githubMcpClient(AiAgentConfigTableVO.Module.ChatModel chatModelConfig) {
         AiAgentConfigTableVO.Module.ChatModel.ToolMcp.StdioServerParameters stdio = chatModelConfig.getToolMcpList()
                 .stream()
                 .map(AiAgentConfigTableVO.Module.ChatModel.ToolMcp::getStdio)
@@ -95,5 +83,4 @@ public class SpringAiToolTest {
 
         return mcpSyncClient;
     }
-
 }

@@ -7,13 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.stereotype.Component;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
+import site.zqiusu.domain.agent.service.armory.node.ChatModelNode;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class DefaultArmoryFactory {
 
     @Resource
@@ -30,6 +33,8 @@ public class DefaultArmoryFactory {
     public static class DynamicContext{
 
         private OpenAiApi openAiApi;
+
+        private ChatModelNode chatModelNode;
 
         private Map<String, Object> dataObjects= new HashMap<>();
 
