@@ -7,6 +7,7 @@ import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
 import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
@@ -26,6 +27,9 @@ import java.time.Duration;
 @Service
 public class ChatModelNode extends AbstractArmorySupport {
 
+    @Resource
+    private AgentNode agentNode;
+
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
         log.info("Ai Agent装配 - ChatModelNode");
@@ -44,18 +48,19 @@ public class ChatModelNode extends AbstractArmorySupport {
                         .build())
                 .build();
 
+        dynamicContext.setChatModel(chatModel);
 
         String call = chatModel.call("你哪有哪些工具能力");
 
         log.info("测试结果:{}", call);
 
 
-        return null;
+        return router(requestParameter, dynamicContext);
     }
 
     @Override
     public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
-        return defaultStrategyHandler;
+        return agentNode;
     }
 
     private static McpSyncClient githubMcpClient(AiAgentConfigTableVO.Module.ChatModel chatModelConfig) {

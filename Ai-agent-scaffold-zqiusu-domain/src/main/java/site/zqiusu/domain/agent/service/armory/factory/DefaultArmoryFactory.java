@@ -1,16 +1,17 @@
 package site.zqiusu.domain.agent.service.armory.factory;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
+import com.google.adk.agents.BaseAgent;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.stereotype.Component;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
-import site.zqiusu.domain.agent.service.armory.node.ChatModelNode;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
 
 import java.util.HashMap;
@@ -34,7 +35,12 @@ public class DefaultArmoryFactory {
 
         private OpenAiApi openAiApi;
 
-        private ChatModelNode chatModelNode;
+        private ChatModel chatModel;
+
+        /**
+         * 智能体配置组
+         */
+        private Map<String, BaseAgent> agentGroup = new HashMap<>();
 
         private Map<String, Object> dataObjects= new HashMap<>();
 
