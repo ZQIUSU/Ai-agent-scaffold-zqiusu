@@ -11,10 +11,13 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.stereotype.Component;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
+import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -47,6 +50,8 @@ public class DefaultArmoryFactory {
         public <T> void setValue(String key, T value){dataObjects.put(key, value);}
 
         public <T> T getValue(String key){ return (T) dataObjects.get(key);}
+
+        private List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = new ArrayList<>();
     }
 
 }
