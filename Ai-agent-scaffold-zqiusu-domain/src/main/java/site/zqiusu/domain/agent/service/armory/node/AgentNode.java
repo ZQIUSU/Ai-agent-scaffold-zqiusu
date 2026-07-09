@@ -42,9 +42,7 @@ public class AgentNode extends AbstractArmorySupport {
 
         }
 
-
         return router(requestParameter, dynamicContext);
-
     }
 
     @Override
