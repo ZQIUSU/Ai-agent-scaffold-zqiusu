@@ -41,9 +41,9 @@ public class ChatModelNode extends AbstractArmorySupport {
         ChatModel chatModel = OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model(aiAgentConfigTableVO.getModule().getChatModel().getModel())
+                        .model(chatModelConfig.getModel())
                         .toolCallbacks(SyncMcpToolCallbackProvider.builder()
-                                .mcpClients(githubMcpClient(aiAgentConfigTableVO.getModule().getChatModel())).build()
+                                .mcpClients(githubMcpClient(chatModelConfig)).build()
                                 .getToolCallbacks())
                         .build())
                 .build();

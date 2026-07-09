@@ -1,6 +1,8 @@
 package site.zqiusu.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
@@ -14,6 +16,8 @@ import site.zqiusu.domain.agent.service.armory.node.agentworkflow.SequentialAgen
 import javax.annotation.Resource;
 import java.util.List;
 
+@Slf4j
+@Service
 public class AgentWorkflowNode extends AbstractArmorySupport {
 
     @Resource
@@ -25,6 +29,16 @@ public class AgentWorkflowNode extends AbstractArmorySupport {
 
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
+        log.info("Ai Agent装配 - AgentWorkflowNode");
+        AiAgentConfigTableVO aiAgentConfigTableVO = requestParameter.getAiAgentConfigTableVO();
+        List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = aiAgentConfigTableVO.getModule().getAgentWorkflows();
+
+        if (agentWorkflows == null || agentWorkflows.isEmpty()){
+            throw new RuntimeException("agentWorkflows is null");
+        }
+
+        dynamicContext.setAgentWorkflows(agentWorkflows);
+
         return router(requestParameter, dynamicContext);
     }
 
