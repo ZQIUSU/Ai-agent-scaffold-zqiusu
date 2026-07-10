@@ -2,6 +2,7 @@ package site.zqiusu.domain.agent.service.armory.factory;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.google.adk.agents.BaseAgent;
+import com.google.adk.agents.SequentialAgent;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
+import site.zqiusu.domain.agent.service.armory.node.agentworkflow.SequentialAgentNode;
 
 import java.util.*;
 
@@ -49,6 +51,8 @@ public class DefaultArmoryFactory {
         public <T> T getValue(String key){ return (T) dataObjects.get(key);}
 
         private List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = new ArrayList<>();
+
+        private SequentialAgent sequentialAgent;
 
         public List<BaseAgent> queryAgentList(List<String> agentNames) {
             if (agentNames == null || agentNames.isEmpty() || agentGroup == null) {
