@@ -4,6 +4,7 @@ import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.google.adk.agents.BaseAgent;
 import com.google.adk.agents.ParallelAgent;
 import com.google.adk.agents.SequentialAgent;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
@@ -11,12 +12,17 @@ import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.AbstractArmorySupport;
 import site.zqiusu.domain.agent.service.armory.factory.DefaultArmoryFactory;
+import site.zqiusu.domain.agent.service.armory.node.RunnerNode;
 
 import java.util.List;
 
 @Slf4j
 @Service
 public class SequentialAgentNode extends AbstractArmorySupport {
+
+    @Resource
+    private RunnerNode runnerNode;
+
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
         log.info("Ai Agent装配 - SequentialAgentNode");
@@ -35,6 +41,7 @@ public class SequentialAgentNode extends AbstractArmorySupport {
 
         dynamicContext.getAgentGroup().put(agentWorkflow.getName(), sequentialAgent);
 
+        dynamicContext.setSequentialAgent(sequentialAgent);
         // 注册到 Spring 容器
         registerBean(agentWorkflow.getName(), SequentialAgent.class, sequentialAgent);
 
@@ -43,6 +50,6 @@ public class SequentialAgentNode extends AbstractArmorySupport {
 
     @Override
     public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
-        return defaultStrategyHandler;
+        return runnerNode;
     }
 }
