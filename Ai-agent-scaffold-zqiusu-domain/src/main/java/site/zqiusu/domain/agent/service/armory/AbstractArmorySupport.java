@@ -14,12 +14,15 @@ import site.zqiusu.domain.agent.service.armory.factory.DefaultArmoryFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+//定义一个抽象类，这个抽象类是干啥的呢？不知道，反正这些节点都继承这个抽象类
 @Slf4j
 public abstract class AbstractArmorySupport extends AbstractMultiThreadStrategyRouter<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> {
 
+    //注入上下文，干啥的？不知道
     @Resource
     protected ApplicationContext applicationContext;
 
+    //重写小傅哥框架的multiThread方法
     @Override
     protected void multiThread(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws ExecutionException, InterruptedException, TimeoutException {
     }
@@ -31,6 +34,7 @@ public abstract class AbstractArmorySupport extends AbstractMultiThreadStrategyR
      * @param beanClass Bean类型
      * @param <T>       Bean类型
      */
+    //通用的Bean注册方法这个是用来干啥的？
     protected synchronized <T> void registerBean(String beanName, Class<T> beanClass, T beanInstance) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
 

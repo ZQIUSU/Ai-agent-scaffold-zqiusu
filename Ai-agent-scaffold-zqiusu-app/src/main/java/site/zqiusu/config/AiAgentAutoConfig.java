@@ -6,6 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import site.zqiusu.domain.agent.model.valobj.properties.AiAgentAutoConfigProperties;
 import site.zqiusu.domain.agent.service.IArmoryService;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(AiAgentAutoConfigProperties.class)
-public class AiAgentAutoConfig implements ApplicationListener<ApplicationReadyEvent> {
+public class AiAgentAutoConfig {
 
     @Resource
     private AiAgentAutoConfigProperties aiAgentAutoConfigProperties;
@@ -23,8 +24,14 @@ public class AiAgentAutoConfig implements ApplicationListener<ApplicationReadyEv
     @Resource
     private IArmoryService armoryService;
 
-    @Override
+    @EventListener(ApplicationReadyEvent.class)
     public void onApplicationEvent(ApplicationReadyEvent event) {
+
+        if (!aiAgentAutoConfigProperties.isEnabled()) {
+            log.info("Ai Agent 自动装配未启用");
+            return;
+        }
+
         try {
             log.info("Ai Agent 智能体装配 {}", JSON.toJSONString(aiAgentAutoConfigProperties.getTables().values()));
 

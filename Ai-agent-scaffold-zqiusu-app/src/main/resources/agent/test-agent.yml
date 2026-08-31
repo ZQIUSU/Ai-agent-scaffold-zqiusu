@@ -1,6 +1,7 @@
 ai:
   agent:
     config:
+      enabled: true
       tables:
         testAgent:
           app-name: testAgent
