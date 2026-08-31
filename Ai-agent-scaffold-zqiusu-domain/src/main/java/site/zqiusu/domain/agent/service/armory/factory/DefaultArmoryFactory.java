@@ -15,20 +15,23 @@ import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.node.RootNode;
-import site.zqiusu.domain.agent.service.armory.node.agentworkflow.SequentialAgentNode;
 
 import java.util.*;
 
+//装配工厂
 @Component
 public class DefaultArmoryFactory {
 
+    //注入一个根节点
     @Resource
     private RootNode rootNode;
 
+    //
     public StrategyHandler<ArmoryCommandEntity, DynamicContext, AiAgentRegisterVO> armoryStrategyHandler(){
         return rootNode;
     }
 
+    //
     @Data
     @Builder
     @AllArgsConstructor

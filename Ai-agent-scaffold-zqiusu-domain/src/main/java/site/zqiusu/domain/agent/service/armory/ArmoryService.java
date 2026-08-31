@@ -16,9 +16,11 @@ import java.util.List;
 @Service
 public class ArmoryService implements IArmoryService {
 
+    //注入装配工厂
     @Resource
     private DefaultArmoryFactory defaultArmoryFactory;
 
+    //实现装配Agent动作
     @Override
     public void acceptArmoryAgents(List<AiAgentConfigTableVO> tables) throws Exception {
         for (AiAgentConfigTableVO table : tables) {
