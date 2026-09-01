@@ -3,8 +3,8 @@ ai:
     config:
       enabled: true
       tables:
-        testAgent_01:
-          app-name: testAgent_01
+        testAgent03:
+          app-name: testAgent03
           agent:
             agent-id: 100002
             agent-name: 单一智能体
