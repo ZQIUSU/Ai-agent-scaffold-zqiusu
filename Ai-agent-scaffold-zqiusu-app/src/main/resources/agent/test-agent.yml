@@ -90,3 +90,5 @@ ai:
                   - CodeWriterAgent
                   - CodeReviewerAgent
                   - CodeRefactorerAgent
+            runner:
+              agent-name: CodePipelineAgent

@@ -16,6 +16,7 @@ public class RootNode extends AbstractArmorySupport {
     @Resource
     private AiApiNode aiApiNode;
 
+    //执行操作
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
 
@@ -23,10 +24,9 @@ public class RootNode extends AbstractArmorySupport {
         return router(requestParameter, dynamicContext);
     }
 
+    //获取下一个节点
     @Override
     public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
-
-        // 配置了下一个节点
         return aiApiNode;
     }
 }
