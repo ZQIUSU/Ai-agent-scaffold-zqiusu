@@ -22,16 +22,16 @@ import java.util.*;
 @Component
 public class DefaultArmoryFactory {
 
-    //注入一个根节点
+    //注入根节点
     @Resource
     private RootNode rootNode;
 
-    //
+    //调用方法时返回一个RootNode对象
     public StrategyHandler<ArmoryCommandEntity, DynamicContext, AiAgentRegisterVO> armoryStrategyHandler(){
         return rootNode;
     }
 
-    //
+    //定义上下文，用来装配节点提供信息
     @Data
     @Builder
     @AllArgsConstructor
@@ -54,8 +54,6 @@ public class DefaultArmoryFactory {
         public <T> T getValue(String key){ return (T) dataObjects.get(key);}
 
         private List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = new ArrayList<>();
-
-        private SequentialAgent sequentialAgent;
 
         public List<BaseAgent> queryAgentList(List<String> agentNames) {
             if (agentNames == null || agentNames.isEmpty() || agentGroup == null) {

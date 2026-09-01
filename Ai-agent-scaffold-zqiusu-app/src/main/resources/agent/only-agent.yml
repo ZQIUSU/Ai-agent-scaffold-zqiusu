@@ -1,0 +1,37 @@
+ai:
+  agent:
+    config:
+      enabled: true
+      tables:
+        testAgent_01:
+          app-name: testAgent_01
+          agent:
+            agent-id: 100002
+            agent-name: 单一智能体
+            agent-desc: 单一智能体
+          module:
+            ai-api:
+              base-url: https://api.apiyi.com/
+              api-key: ${API_YI_API_KEY}
+              completions-path: /v1/chat/completions
+              embeddings-path: /v1/embeddings
+            chat-model:
+              model: claude-opus-4-6
+              tool-mcp-list:
+                - stdio:
+                    name: github
+                    request-timeout: 180000
+                    server-parameters:
+                      command: npx
+                      args:
+                        - -y
+                        - "@modelcontextprotocol/server-github"
+                      env:
+                        GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PERSONAL_ACCESS_TOKEN}
+            agents:
+              - name: only-agent
+                description: 百度搜索
+                instruction: |
+                  你是一个百度搜索引擎
+            runner:
+              agent-name: only-agent

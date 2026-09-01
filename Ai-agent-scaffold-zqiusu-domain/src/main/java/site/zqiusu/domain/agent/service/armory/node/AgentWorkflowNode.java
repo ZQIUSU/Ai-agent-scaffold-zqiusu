@@ -26,6 +26,8 @@ public class AgentWorkflowNode extends AbstractArmorySupport {
     private ParallelAgentNode parallelAgentNode;
     @Resource
     private SequentialAgentNode sequentialAgentNode;
+    @Resource
+    private RunnerNode runnerNode;
 
     @Override
     protected AiAgentRegisterVO doApply(ArmoryCommandEntity requestParameter, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
@@ -34,7 +36,7 @@ public class AgentWorkflowNode extends AbstractArmorySupport {
         List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = aiAgentConfigTableVO.getModule().getAgentWorkflows();
 
         if (agentWorkflows == null || agentWorkflows.isEmpty()){
-            throw new RuntimeException("agentWorkflows is null");
+            return router(requestParameter, dynamicContext);
         }
 
         dynamicContext.setAgentWorkflows(agentWorkflows);
@@ -45,6 +47,11 @@ public class AgentWorkflowNode extends AbstractArmorySupport {
     @Override
     public StrategyHandler<ArmoryCommandEntity, DefaultArmoryFactory.DynamicContext, AiAgentRegisterVO> get(ArmoryCommandEntity armoryCommandEntity, DefaultArmoryFactory.DynamicContext dynamicContext) throws Exception {
         List<AiAgentConfigTableVO.Module.AgentWorkflow> agentWorkflows = dynamicContext.getAgentWorkflows();
+
+        if (null == agentWorkflows || agentWorkflows.isEmpty()){
+            return runnerNode;
+        }
+
         AiAgentConfigTableVO.Module.AgentWorkflow agentWorkflow = agentWorkflows.get(0);
 
         String type = agentWorkflow.getType();

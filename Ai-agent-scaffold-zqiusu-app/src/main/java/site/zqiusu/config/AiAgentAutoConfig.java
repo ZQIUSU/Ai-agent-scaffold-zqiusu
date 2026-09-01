@@ -24,9 +24,11 @@ public class AiAgentAutoConfig {
     @Resource
     private IArmoryService armoryService;
 
+    //监听服务是否启动，启动后开始装配
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
+        //自动装配
         if (!aiAgentAutoConfigProperties.isEnabled()) {
             log.info("Ai Agent 自动装配未启用");
             return;
