@@ -27,6 +27,8 @@ ai:
                         - "@modelcontextprotocol/server-github"
                       env:
                         GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PERSONAL_ACCESS_TOKEN}
+                - local:
+                    name: myToolCallbackProvider
             agents:
               - name: RenewableEnergyResearcher
                 description: Researches renewable energy sources.
