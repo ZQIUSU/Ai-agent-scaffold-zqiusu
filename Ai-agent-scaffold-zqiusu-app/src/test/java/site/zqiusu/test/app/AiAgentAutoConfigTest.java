@@ -61,7 +61,7 @@ public class AiAgentAutoConfigTest {
                 .createSession(appName, "xiaofuge")
                 .blockingGet();
 
-        Content userMsg = Content.fromParts(Part.fromText("你具备哪些能力"));
+        Content userMsg = Content.fromParts(Part.fromText("把woyaochifan转化为大写"));
         Flowable<Event> events = runner.runAsync("xiaofuge", session.id(), userMsg);
 
         List<String> outputs = new ArrayList<>();
@@ -73,7 +73,7 @@ public class AiAgentAutoConfigTest {
 
     @Test
     public void test_handlerMessage_03(){
-        AiAgentRegisterVO aiAgentRegisterVO = applicationContext.getBean("100002", AiAgentRegisterVO.class);
+        AiAgentRegisterVO aiAgentRegisterVO = applicationContext.getBean("100003", AiAgentRegisterVO.class);
 
         String appName = aiAgentRegisterVO.getAppName();
         InMemoryRunner runner = aiAgentRegisterVO.getRunner();

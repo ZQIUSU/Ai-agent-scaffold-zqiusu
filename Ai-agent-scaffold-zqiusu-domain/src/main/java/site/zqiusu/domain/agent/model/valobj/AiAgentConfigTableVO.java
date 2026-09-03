@@ -84,7 +84,7 @@ public class AiAgentConfigTableVO {
 
                 private StdioServerParameters stdio;
 
-                private LocalParameters local;
+                private LocalServerParameters local;
 
                 @Data
                 public static class SSEServerParameters {
@@ -111,7 +111,7 @@ public class AiAgentConfigTableVO {
                 }
 
                 @Data
-                public static class LocalParameters {
+                public static class LocalServerParameters{
                     private String name;
                 }
 
