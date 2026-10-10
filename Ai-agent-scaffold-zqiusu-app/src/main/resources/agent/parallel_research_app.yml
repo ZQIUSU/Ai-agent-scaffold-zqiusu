@@ -110,3 +110,5 @@ ai:
                   - SynthesisAgent
             runner:
               agent-name: ResearchAndSynthesisPipeline
+              plugin-name-list:
+                - myTestPlugin

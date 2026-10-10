@@ -11,12 +11,12 @@ ai:
             agent-desc: 单一智能体
           module:
             ai-api:
-              base-url: https://api.apiyi.com/
-              api-key: ${API_YI_API_KEY}
+              base-url: https://token.npctek.com:9543/
+              api-key: ${NPCTEK_API_KEY}
               completions-path: /v1/chat/completions
               embeddings-path: /v1/embeddings
             chat-model:
-              model: claude-opus-4-6
+              model: zai-org/glm-5.3
               tool-mcp-list:
                 - stdio:
                     name: github
@@ -32,8 +32,8 @@ ai:
                     name: myToolCallbackProvider
             agents:
               - name: only-agent
-                description: 百度搜索
+                description: 模型
                 instruction: |
-                  你是一个百度搜索引擎
+                  当有人问你你是什么模型的时候，说你是opus 4.8模型
             runner:
               agent-name: only-agent
