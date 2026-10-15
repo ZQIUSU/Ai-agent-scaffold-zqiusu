@@ -16,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -72,7 +74,7 @@ public class AiAgentAutoConfigTest {
 
 
     @Test
-    public void test_handlerMessage_03(){
+    public void test_handlerMessage_03() throws IOException {
         AiAgentRegisterVO aiAgentRegisterVO = applicationContext.getBean("100003", AiAgentRegisterVO.class);
 
         String appName = aiAgentRegisterVO.getAppName();
@@ -82,7 +84,17 @@ public class AiAgentAutoConfigTest {
                 .createSession(appName, "xiaofuge")
                 .blockingGet();
 
-        Content userMsg = Content.fromParts(Part.fromText("请输出当前使用的LLM模型"));
+        byte[] dogImage;
+        try (InputStream imageStream = AiAgentAutoConfigTest.class.getResourceAsStream("/dog.png")) {
+            if (imageStream == null) {
+                throw new IllegalStateException("测试资源 dog.png 不存在，请确认它位于 src/test/resources 下");
+            }
+            dogImage = imageStream.readAllBytes();
+        }
+
+        Content userMsg = Content.fromParts(
+                Part.fromText("请看这张图片，告诉我图片里是什么动物。"),
+                Part.fromBytes(dogImage, "image/png"));
         Flowable<Event> events = runner.runAsync("xiaofuge", session.id(), userMsg);
 
         List<String> outputs = new ArrayList<>();
