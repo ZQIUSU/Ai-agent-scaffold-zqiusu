@@ -2,7 +2,6 @@ package site.zqiusu.domain.agent.service.armory.node;
 
 import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.google.adk.agents.LlmAgent;
-import com.google.adk.models.springai.SpringAI;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
@@ -12,6 +11,7 @@ import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
 import site.zqiusu.domain.agent.model.valobj.AiAgentRegisterVO;
 import site.zqiusu.domain.agent.service.armory.AbstractArmorySupport;
 import site.zqiusu.domain.agent.service.armory.factory.DefaultArmoryFactory;
+import site.zqiusu.domain.agent.service.armory.matter.patch.MySpringAI;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class AgentNode extends AbstractArmorySupport {
             LlmAgent llmAgent = LlmAgent.builder()
                     .name(agentConfig.getName())
                     .description(agentConfig.getDescription())
-                    .model(new SpringAI(chatModel))
+                    .model(new MySpringAI(chatModel))
                     .instruction(agentConfig.getInstruction())
                     .outputKey(agentConfig.getOutputKey())
                     .build();

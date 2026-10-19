@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import site.zqiusu.domain.agent.model.entity.ArmoryCommandEntity;
 import site.zqiusu.domain.agent.model.valobj.AiAgentConfigTableVO;
@@ -23,6 +24,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class DefaultArmoryFactory {
 
+    @Resource
+    private ApplicationContext applicationContext;
+
     //注入根节点
     @Resource
     private RootNode rootNode;
@@ -30,6 +34,12 @@ public class DefaultArmoryFactory {
     //调用方法时返回一个RootNode对象
     public StrategyHandler<ArmoryCommandEntity, DynamicContext, AiAgentRegisterVO> armoryStrategyHandler(){
         return rootNode;
+    }
+
+    public AiAgentRegisterVO getAiAgentRegisterVO(String agentId) {
+        return applicationContext.containsBean(agentId)
+                ? applicationContext.getBean(agentId, AiAgentRegisterVO.class)
+                : null;
     }
 
     //定义上下文，用来装配节点提供信息
