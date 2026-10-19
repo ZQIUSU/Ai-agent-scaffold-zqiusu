@@ -16,7 +16,7 @@ ai:
               completions-path: /v1/chat/completions
               embeddings-path: /v1/embeddings
             chat-model:
-              model: zai-org/glm-5.3
+              model: aliyun/deepseek-v4.1-flash
               tool-mcp-list:
                 - stdio:
                     name: github
