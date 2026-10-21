@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10221d">
+  <meta name="description" content="登录 AI Agent，连接你的专属智能体，让想法成为行动。">
+  <title>登录 · AI Agent</title>
+  <style>
+    :root { color-scheme: light; --ink: #182b25; --muted: #79817c; --green: #285c45; --lime: #c4f594; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--ink); background: #f8f9f5; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button, input, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, input:focus-visible { outline: 3px solid #80a98b; outline-offset: 4px; }
+    button:disabled { cursor: wait; opacity: .7; }
+    [hidden] { display: none !important; }
+    svg { display: block; }
+    .page { min-height: 100svh; display: grid; grid-template-columns: 55% 45%; }
+    .showcase { position: relative; min-height: 820px; overflow: hidden; padding: 42px 9% 32px; color: #f2f6ed; background: #10221d; display: flex; flex-direction: column; }
+    .showcase::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 52% 56%, #477b492e 0, transparent 53%), linear-gradient(90deg, #ffffff04 1px, transparent 1px), linear-gradient(#ffffff04 1px, transparent 1px); background-size: auto, 64px 64px, 64px 64px; mask-image: linear-gradient(#000, #000 82%, transparent); }
+    .brand { position: relative; display: flex; align-items: center; gap: 11px; width: fit-content; }
+    .brand-icon { width: 36px; height: 36px; display: grid; place-items: center; background: var(--lime); border-radius: 11px; color: #193427; }
+    .brand-name { font-size: 20px; font-weight: 650; letter-spacing: -.7px; }
+    .brand-tag { margin-left: 4px; padding: 4px 7px; border: 1px solid #ffffff26; border-radius: 5px; color: #acbcae; font-size: 9px; letter-spacing: 1.4px; }
+    .intro { position: relative; margin-top: 66px; z-index: 1; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 20px; color: #b3c0b4; font-size: 10px; font-weight: 550; letter-spacing: 2.3px; }
+    .eyebrow::before { content: ""; width: 19px; height: 1px; background: var(--lime); }
+    h1 { margin: 0; font-size: clamp(34px, 3.5vw, 54px); font-weight: 550; line-height: 1.35; letter-spacing: -1.7px; }
+    h1 span { color: var(--lime); }
+    .intro-copy { margin: 18px 0 0; font-size: 13px; line-height: 1.95; color: #a8b7ac; letter-spacing: .5px; }
+    .visual { position: relative; width: 100%; max-width: 540px; height: 310px; margin: 8px auto 18px; flex: 1; min-height: 240px; display: grid; place-items: center; }
+    .network { width: 100%; height: 100%; max-height: 360px; overflow: visible; }
+    .orbit { transform-origin: 260px 175px; animation: orbit 32s linear infinite; }
+    .orbit-reverse { animation-direction: reverse; animation-duration: 45s; }
+    .sphere { animation: breathe 6s ease-in-out infinite; transform-origin: 260px 175px; }
+    .visual-label { position: absolute; top: 25%; left: 0; display: flex; align-items: center; gap: 7px; color: #a6bca7; font: 9px ui-monospace, SFMono-Regular, monospace; letter-spacing: 1.7px; }
+    .visual-label::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px #c4f59488; }
+    .agent-card { position: absolute; right: -7px; bottom: 14%; display: flex; align-items: center; gap: 11px; padding: 12px 17px 12px 12px; border: 1px solid #a7c9ab33; background: #1d352be6; border-radius: 12px; box-shadow: 0 12px 35px #0002; backdrop-filter: blur(12px); animation: float 6s ease-in-out infinite; }
+    .card-check { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #c4f59418; color: var(--lime); }
+    .agent-card strong { display: block; font-size: 11px; font-weight: 550; margin-bottom: 4px; }
+    .agent-card small { display: block; color: #94aa99; font-size: 9px; }
+    .capabilities { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 24px 0; border-top: 1px solid #ffffff14; }
+    .capability svg { color: #bbd7ab; margin-bottom: 11px; }
+    .capability strong { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+    .capability span { display: block; color: #8da294; font-size: 10px; line-height: 1.65; }
+    .showcase-footer { position: relative; color: #708d7c; font-size: 9px; letter-spacing: 1.6px; padding-top: 9px; }
+    .login-side { padding: 42px 9% 28px; display: flex; flex-direction: column; min-width: 0; }
+    .top-note { display: flex; align-items: center; justify-content: flex-end; gap: 7px; color: #888f87; font-size: 11px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #76a181; }
+    .form-area { width: 100%; max-width: 360px; margin: auto; padding: 62px 0; }
+    .welcome-mark { width: 44px; height: 44px; background: #e8eee3; border: 1px solid #dfe7d9; border-radius: 13px; display: grid; place-items: center; color: #436b4e; margin-bottom: 28px; }
+    h2 { font-size: 30px; line-height: 1.4; font-weight: 600; letter-spacing: -.9px; margin: 0 0 11px; }
+    .subtitle { color: var(--muted); font-size: 12px; line-height: 1.8; margin: 0 0 33px; }
+    .field { margin-bottom: 21px; }
+    .field label { display: block; margin: 0 0 9px; font-size: 12px; font-weight: 550; }
+    .input-wrap { display: flex; align-items: center; position: relative; }
+    .input-icon { position: absolute; left: 15px; color: #929c91; pointer-events: none; }
+    .input-wrap input { min-width: 0; width: 100%; height: 49px; border: 1px solid #dce1d6; border-radius: 9px; background: #fff; padding: 0 44px; font-size: 13px; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+    .input-wrap input::placeholder { color: #a0a69d; font-size: 12px; }
+    .input-wrap input:focus { outline: none; border-color: #749779; box-shadow: 0 0 0 3px #719b7718; }
+    .input-wrap input[aria-invalid="true"] { border-color: #b56e5e; }
+    .password-toggle { position: absolute; right: 5px; display: grid; place-items: center; width: 38px; height: 38px; border: 0; background: none; color: #8d998d; border-radius: 6px; }
+    .password-toggle:hover { color: var(--green); background: #f3f6f0; }
+    .options { margin: 0 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 11px; }
+    .remember { display: flex; align-items: center; gap: 7px; color: #697568; cursor: pointer; }
+    .remember input { width: 14px; height: 14px; margin: 0; accent-color: var(--green); cursor: pointer; }
+    .private-note { color: #8d9689; font-size: 10px; }
+    .error { color: #a14d3e; font-size: 12px; line-height: 1.65; background: #fff0eb; border: 1px solid #efd8cf; padding: 10px 12px; border-radius: 7px; margin: -5px 0 17px; }
+    .primary { display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; min-height: 49px; padding: 12px 18px; border: 1px solid var(--green); background: var(--green); border-radius: 9px; font-size: 13px; font-weight: 550; color: #fff; box-shadow: 0 4px 8px #244b3510; transition: background .2s, transform .2s; }
+    .primary:hover { background: #1d4835; }
+    .primary:active { transform: translateY(1px); }
+    .primary svg { transition: transform .2s; }
+    .primary:hover svg { transform: translateX(3px); }
+    .divider { display: flex; align-items: center; gap: 14px; margin: 27px 0 18px; color: #9da59a; font-size: 10px; }
+    .divider::before, .divider::after { content: ""; height: 1px; background: #e2e6dc; flex: 1; }
+    .demo { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border: 1px solid #e1e7da; border-radius: 9px; background: #eff3e9; }
+    .demo-icon { color: #698260; flex-shrink: 0; }
+    .demo-copy { flex: 1; font-size: 10px; color: #7d8975; line-height: 1.7; }
+    .demo-copy strong { display: block; color: #536b4c; font-size: 11px; font-weight: 550; }
+    .demo-copy code { font: 10px ui-monospace, SFMono-Regular, monospace; }
+    .fill-demo { border: 0; background: none; color: #43653c; font-size: 10px; padding: 8px 0 8px 8px; white-space: nowrap; }
+    .fill-demo:hover { text-decoration: underline; }
+    .login-footer { text-align: center; color: #a1a79b; font-size: 10px; letter-spacing: .3px; line-height: 1.8; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { opacity: .75; transform: scale(.97); } }
+    @keyframes float { 50% { transform: translateY(-7px); } }
+    @media (min-width: 1600px) { .showcase { padding-left: 14%; padding-right: 14%; } .intro { margin-top: 80px; } }
+    @media (max-width: 1100px) { .showcase { padding-left: 8%; padding-right: 8%; } .login-side { padding-left: 10%; padding-right: 10%; } .agent-card { right: -8px; } }
+    @media (max-width: 760px) {
+      .page { grid-template-columns: 1fr; }
+      .showcase { min-height: 0; padding: 26px 28px 23px; }
+      .brand-icon { width: 32px; height: 32px; border-radius: 9px; }
+      .brand-name { font-size: 18px; }
+      .intro { margin-top: 32px; }
+      .eyebrow { font-size: 9px; margin-bottom: 12px; }
+      h1 { font-size: 32px; line-height: 1.3; letter-spacing: -.8px; }
+      .intro-copy { font-size: 11px; margin-top: 12px; }
+      .intro-copy br { display: none; }
+      .visual { position: absolute; width: 200px; height: 180px; min-height: 0; right: -45px; top: 70px; opacity: .3; pointer-events: none; }
+      .visual-label, .agent-card, .capabilities, .showcase-footer { display: none; }
+      .login-side { min-height: 620px; padding: 23px 28px; }
+      .top-note { font-size: 10px; }
+      .form-area { max-width: 390px; padding: 28px 0 40px; }
+      .welcome-mark { display: none; }
+      h2 { font-size: 27px; }
+      .subtitle { margin-bottom: 27px; }
+    }
+    @media (max-width: 380px) { .showcase, .login-side { padding-left: 22px; padding-right: 22px; } h1 { font-size: 28px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="showcase" aria-labelledby="hero-title">
+      <div class="brand" aria-label="AI Agent">
+        <span class="brand-icon" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z" fill="currentColor"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z" fill="currentColor"/></svg></span>
+        <span class="brand-name">AI Agent</span><span class="brand-tag">WORKSPACE</span>
+      </div>
+      <div class="intro">
+        <p class="eyebrow">YOUR IDEAS. AMPLIFIED.</p>
+        <h1 id="hero-title">让灵感，<br><span>即刻成为行动。</span></h1>
+        <p class="intro-copy">连接你的专属 AI 智能体。<br>从一个想法，到每一步执行，让复杂的工作轻松发生。</p>
+      </div>
+      <div class="visual" aria-label="智能体协作网络效果图" role="img">
+        <span class="visual-label" aria-hidden="true">AGENT NETWORK</span>
+        <svg class="network" viewBox="0 0 520 350" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="halo"><stop stop-color="#b6f68c" stop-opacity=".23"/><stop offset="1" stop-color="#b6f68c" stop-opacity="0"/></radialGradient>
+            <radialGradient id="sphereFill" cx=".3" cy=".25" r=".9"><stop stop-color="#a8e487" stop-opacity=".23"/><stop offset=".6" stop-color="#78b76b" stop-opacity=".07"/><stop offset="1" stop-color="#12281e" stop-opacity=".6"/></radialGradient>
+            <linearGradient id="ring" x1="120" y1="60" x2="380" y2="290" gradientUnits="userSpaceOnUse"><stop stop-color="#d1ffab" stop-opacity=".8"/><stop offset=".5" stop-color="#b2e889" stop-opacity=".1"/><stop offset="1" stop-color="#bcf598" stop-opacity=".55"/></linearGradient>
+            <linearGradient id="spark" x1="236" y1="143" x2="283" y2="207" gradientUnits="userSpaceOnUse"><stop stop-color="#e2ffc0"/><stop offset="1" stop-color="#8ccd70"/></linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+          </defs>
+          <circle cx="260" cy="175" r="160" fill="url(#halo)"/>
+          <ellipse cx="260" cy="175" rx="204" ry="66" stroke="#b6e49b" stroke-opacity=".13" transform="rotate(-25 260 175)"/>
+          <ellipse cx="260" cy="175" rx="170" ry="116" stroke="#b6e49b" stroke-opacity=".08" transform="rotate(30 260 175)"/>
+          <path d="M57 248h70m-35-6 6 6-6 6M376 64h64m-8-5 5 5-5 5" stroke="#a9ce9633"/>
+          <g class="sphere">
+            <circle cx="260" cy="175" r="99" fill="url(#sphereFill)" stroke="url(#ring)"/>
+            <g stroke="#b2e889" stroke-opacity=".24" stroke-width=".7">
+              <ellipse cx="260" cy="175" rx="26" ry="99" transform="rotate(-22 260 175)"/>
+              <ellipse cx="260" cy="175" rx="54" ry="99" transform="rotate(-22 260 175)"/>
+              <ellipse cx="260" cy="175" rx="80" ry="99" transform="rotate(-22 260 175)"/>
+              <ellipse cx="260" cy="175" rx="99" ry="24" transform="rotate(-22 260 175)"/>
+              <ellipse cx="260" cy="175" rx="99" ry="51" transform="rotate(-22 260 175)"/>
+              <ellipse cx="260" cy="175" rx="99" ry="78" transform="rotate(-22 260 175)"/>
+            </g>
+            <circle cx="260" cy="175" r="58" fill="#152e24" fill-opacity=".7"/>
+            <path d="M260 139c5 22 14 31 36 36-22 5-31 14-36 36-5-22-14-31-36-36 22-5 31-14 36-36Z" fill="#b6f68c" filter="url(#glow)" opacity=".4"/>
+            <path d="M260 145c4 19 11 26 30 30-19 4-26 11-30 30-4-19-11-26-30-30 19-4 26-11 30-30Z" fill="url(#spark)"/>
+            <path d="m291 140 2.5 7.5 7.5 2.5-7.5 2.5-2.5 7.5-2.5-7.5-7.5-2.5 7.5-2.5 2.5-7.5Z" fill="#d1f9b0"/>
+          </g>
+          <g class="orbit">
+            <circle cx="260" cy="175" r="131" stroke="#b8e49c" stroke-opacity=".14" stroke-dasharray="2 7"/>
+            <circle cx="260" cy="44" r="5" fill="#c4f594"/><circle cx="260" cy="44" r="12" stroke="#c4f594" stroke-opacity=".2"/>
+            <circle cx="147" cy="242" r="4" fill="#9bbd84"/><circle cx="147" cy="242" r="9" stroke="#b8e49c" stroke-opacity=".16"/>
+          </g>
+          <g class="orbit orbit-reverse"><circle cx="434" cy="175" r="5" fill="#83ae77"/><circle cx="434" cy="175" r="13" stroke="#b8e49c" stroke-opacity=".15"/><circle cx="86" cy="175" r="3" fill="#b6d9a2"/></g>
+          <g fill="#b6d9a2"><circle cx="117" cy="100" r="1.5" opacity=".5"/><circle cx="390" cy="103" r="2" opacity=".8"/><circle cx="193" cy="307" r="1.5" opacity=".4"/><circle cx="352" cy="291" r="1.5" opacity=".5"/></g>
+        </svg>
+        <div class="agent-card" aria-hidden="true"><span class="card-check"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><strong>让每个想法，都有回响</strong><small>思考 · 规划 · 执行</small></div></div>
+      </div>
+      <div class="capabilities">
+        <div class="capability"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6Z" stroke="currentColor" stroke-width="1.3"/></svg><strong>自主规划</strong><span>理解目标，拆解复杂任务</span></div>
+        <div class="capability"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="15" y="15" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M9 6h6a3 3 0 0 1 3 3v6M6 9v6a3 3 0 0 0 3 3h6" stroke="currentColor" stroke-width="1.3"/></svg><strong>工具协作</strong><span>连接工具，拓展能力边界</span></div>
+        <div class="capability"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 17 10 11l4 4 6-9M14 6h6v6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><strong>持续进化</strong><span>保留上下文，让协作延续</span></div>
+      </div>
+      <footer class="showcase-footer">BUILT FOR THE WAY YOU THINK.</footer>
+    </section>
+
+    <section class="login-side" aria-label="账号登录">
+      <div class="top-note"><span class="status-dot" aria-hidden="true"></span> 你的专属智能工作空间</div>
+      <div class="form-area">
+        <div id="login-view">
+          <div class="welcome-mark" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m12 8 1.1 2.9L16 12l-2.9 1.1L12 16l-1.1-2.9L8 12l2.9-1.1L12 8Z" fill="currentColor"/></svg></div>
+          <h2>欢迎回来</h2>
+          <p class="subtitle">登录，开启你与 AI 的下一次协作。</p>
+          <form id="login-form" novalidate>
+            <div class="field">
+              <label for="username">账号</label>
+              <div class="input-wrap"><svg class="input-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 20v-2a7 7 0 0 1 14 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input id="username" name="username" type="text" placeholder="请输入账号" value="admin" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="64" aria-describedby="form-error"></div>
+            </div>
+            <div class="field">
+              <label for="password">密码</label>
+              <div class="input-wrap"><svg class="input-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" required maxlength="128" aria-describedby="form-error"><button id="password-toggle" class="password-toggle" type="button" aria-label="显示密码" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.4"/><path id="eye-slash" d="m4 3 16 18" stroke="currentColor" stroke-width="1.5" style="display:none"/></svg></button></div>
+            </div>
+            <div class="options"><label class="remember"><input id="remember" name="remember" type="checkbox" checked> 保持登录 7 天</label><span class="private-note">专注于你的每一个想法</span></div>
+            <p id="form-error" class="error" role="alert" hidden></p>
+            <button id="login-button" class="primary" type="submit">登录工作空间 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </form>
+          <div class="divider">初次见面，先体验一下</div>
+          <div class="demo"><svg class="demo-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M12 3v4m-4 6h.01M16 13h.01M9 17h6M1 11v5m22-5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><div class="demo-copy"><strong>默认体验账号</strong>账号 <code>admin</code><span aria-hidden="true"> · </span>密码 <code>admin</code></div><button id="fill-demo" class="fill-demo" type="button">一键填入 ↗</button></div>
+        </div>
+        <p id="notice" class="sr-only" role="status" aria-live="polite"></p>
+      </div>
+      <footer class="login-footer">AI Agent Workspace <span aria-hidden="true"> · </span> 让想法，走得更远。</footer>
+    </section>
+  </main>
+  <script src="js/auth.js"></script>
+  <script>
+    (() => {
+      'use strict';
+      if (AgentAuth.readSession()) { location.replace('index.html'); return; }
+      const form = document.getElementById('login-form');
+      const username = document.getElementById('username');
+      const password = document.getElementById('password');
+      const error = document.getElementById('form-error');
+      function clearError() {
+        error.hidden = true;
+        error.textContent = '';
+        username.removeAttribute('aria-invalid');
+        password.removeAttribute('aria-invalid');
+      }
+      function showError(message, field) {
+        error.textContent = message;
+        error.hidden = false;
+        if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+      }
+      document.getElementById('password-toggle').addEventListener('click', event => {
+        const reveal = password.type === 'password';
+        password.type = reveal ? 'text' : 'password';
+        event.currentTarget.setAttribute('aria-label', reveal ? '隐藏密码' : '显示密码');
+        event.currentTarget.setAttribute('aria-pressed', String(reveal));
+        document.getElementById('eye-slash').style.display = reveal ? 'block' : 'none';
+      });
+      document.getElementById('fill-demo').addEventListener('click', () => {
+        username.value = 'admin';
+        password.value = 'admin';
+        clearError();
+        document.getElementById('notice').textContent = '体验账号已填入，点击登录即可开始。';
+        document.getElementById('login-button').focus();
+      });
+      username.addEventListener('input', clearError);
+      password.addEventListener('input', clearError);
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        clearError();
+        if (!username.value.trim()) return showError('请输入账号。', username);
+        if (!password.value) return showError('请输入密码。', password);
+        try {
+          const session = AgentAuth.login(username.value, password.value, document.getElementById('remember').checked);
+          if (!session) {
+            username.setAttribute('aria-invalid', 'true');
+            return showError('账号或密码不正确，请使用体验账号 admin / admin。', password);
+          }
+          password.value = '';
+          location.replace('index.html');
+        } catch (error) { showError(error.message); }
+      });
+      window.addEventListener('pageshow', () => {
+        if (AgentAuth.readSession()) location.replace('index.html');
+      });
+    })();
+  </script>
+</body>
+</html>
