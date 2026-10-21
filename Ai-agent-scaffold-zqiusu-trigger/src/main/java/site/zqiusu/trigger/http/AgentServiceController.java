@@ -60,7 +60,7 @@ public class AgentServiceController implements IAgentService {
     }
 
     @Override
-    @RequestMapping(value = "create_session", method = RequestMethod.GET)
+    @RequestMapping(value = "create_session", method = {RequestMethod.GET, RequestMethod.POST})
     public Response<CreateSessionResponseDTO> createSession(@RequestBody CreateSessionRequestDTO requestDTO) {
         try {
             log.info("创建会话 agentId;{}, userId:{}",requestDTO.getAgentId(), requestDTO.getUserId());
@@ -98,7 +98,7 @@ public class AgentServiceController implements IAgentService {
                 sessionId = chatService.createSession(requestDTO.getAgentId(), requestDTO.getUserId());
             }
 
-            List<String> message = chatService.handleMessage(requestDTO.getAgentId(), requestDTO.getUserId(), requestDTO.getSessionId(), requestDTO.getMessage());
+            List<String> message = chatService.handleMessage(requestDTO.getAgentId(), requestDTO.getUserId(), sessionId, requestDTO.getMessage());
             ChatResponseDTO responseDTO = new ChatResponseDTO();
             responseDTO.setContent(String.join(("\n"),message));
 

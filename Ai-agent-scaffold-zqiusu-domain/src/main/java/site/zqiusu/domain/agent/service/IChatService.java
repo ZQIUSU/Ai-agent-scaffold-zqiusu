@@ -11,6 +11,7 @@ public interface IChatService {
 
     List<AiAgentConfigTableVO.Agent> queryAiAgentConfigList();
 
+    /** 获取或创建用户与智能体的会话；调用方保存 sessionId 后可直接发送后续消息。 */
     String createSession(String agentId, String userId);
 
     List<String> handleMessage(String agentId, String userId,String message);
